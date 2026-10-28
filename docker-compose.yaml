@@ -1,0 +1,26 @@
+
+networks:
+  silo-network:
+    driver: bridge
+
+volumes:
+  silo-volume:
+    driver: local
+
+services:
+  silo:
+    image: docker.io/pgsty/silo:RELEASE.2026-10-26T00-00-00Z
+    container_name: silo
+    restart: unless-stopped
+    environment:
+      - MINIO_ROOT_USER=silo-admin
+      - MINIO_ROOT_PASSWORD=replace-with-a-strong-secret
+    networks:
+      - silo-network
+    volumes:
+      - silo-volume:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: ["server", "/data", "--console-address", ":9001"]
+
